@@ -1,173 +1,156 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
+//OverRancid#0590
+#include <stdio.h>     //Parental Advisory
+#include <stdlib.h>   //Explicit Content
+#include <time.h>
+#include <string.h>
 
-void query1(int *arr, int *CIarr, int n);
-void query2(int *arr, int n);
-void query_1(int* BItree, int n);
-void query_2(int *BItree, int n);
-
-void func1(int *arr, int n)
-    {   
-        int CIarr[n];
-        CIarr[0]=arr[0];
-        for(int j=1;j<n;j++)
-        {
-            CIarr[j]=CIarr[j-1]+arr[j];
-        }
-        printf("By function_1:\n");
-        clock_t t;
-        t = clock();
-        arr[1]+=5;
-        query1(arr,CIarr,n); 
-        t = clock() - t;
-        double time_taken1 = ((double)t)/CLOCKS_PER_SEC; // in seconds
-        printf("The time taken for query 1 by function 1 is %f seconds.\n", time_taken1);
-        printf("The incremented value of first indexed element is %d\n",CIarr[1]);
-        
-        clock_t t2;
-        t2 = clock();
-        query2(CIarr,n);
-        t2 = clock() - t2;
-        double time_taken2 = ((double)t2)/CLOCKS_PER_SEC; // in seconds
-        printf("The time taken for query 2 by function 1 is %f seconds.\n", time_taken2);
+void checkMalloc(void* ptr){
+    if(ptr==NULL){
+        printf("malloc failed bruh.\n");
+        exit(0);
     }
-
-void query1(int *arr, int *CIarr, int n)
-    {
-        for(int i=1;i<n;i++)
-        {
-            CIarr[i]=CIarr[i]+5;
-        }
-    }
-
-void query2(int *CIarr, int n)
-{
-    printf("The sum of first n-5 elements is %d\n",CIarr[n-6]);
 }
 
-void func2(int *a,int n){
-    a[1]+=5;
-    int j;
-    int* BItree=(int *)malloc(sizeof(int));
-    int m=1;
-    BItree[0]=a[0];
-    for(int i=1; i<n; i++){
-        if(i==m){
-            BItree=realloc(BItree,4*(2*m));
-            m*=2;
-        }
+int N, *arr, *CIarr, *BItree;
+clock_t start, end;
+double tym;
+
+//Prefix Sum
+//point update: O(N)
+//range sum: O(1)
+void function_1(){
+    CIarr[0] = 0;
+    for(int i=1; i<N; i++){
+        CIarr[i] = CIarr[i-1] + arr[i];
+    }
+}
+
+//Binary Index Tree
+//point update: O(logN)
+//range sum: O(logN)
+void function_2(){
+    BItree[0] = 0;
+    int i, j;
+    for(i=1; i<N; i++){
         BItree[i] = 0;
-        int sum=0;
-        j=i-(i&(-i));
-        j++;
-        for(int k=j; k<i+1; k++){
-            sum+=a[k];
+        for(j=i+1-(i&-i); j<= i; j++){
+            BItree[i] += arr[j];
         }
-        BItree[i]=sum;
-    }
-
-    printf("By function_2:\n");
-        clock_t t;
-        t = clock();
-        query_1(BItree, n);
-        t = clock() - t;
-        double time_taken1 = ((double)t)/CLOCKS_PER_SEC; // in seconds
-        printf("The time taken for query_1 by function 2 is %f seconds.\n", time_taken1) ; 
-        printf("The incremented value of the first indexed elemt is %d\n",a[1]); 
-
-        clock_t t2;
-        t2 = clock();
-        query_2(BItree, n-6);
-        t2 = clock() - t2;
-        double time_taken2 = ((double)t2)/CLOCKS_PER_SEC; // in seconds
-        printf("The time taken for query 2 by function 2 is %f seconds.\n", time_taken2);
-}
-
-void query_1(int* BItree ,int n)
-{
-    int idx=1;
-    while(idx<=n)
-    {
-        BItree[idx]+= 5;
-        idx+= (idx & -idx);
     }
 }
 
-void query_2(int *BItree, int n)
-{
-    int sum=0;
-    for(int i=n; i>0; (i-=(i & -i)))
-    {
-        sum+=BItree[i];
+void show(int* x){
+    for(int i=0; i<N; i++){
+        printf("%d ", x[i]);
     }
-    printf("The sum of first n-5 elements is %d\n",sum-5);
+    printf("\n");
 }
 
+int main(){
+    FILE* fptr;
+    unsigned n = 0x7ffffff; //adjust this value if malloc keeps failing
+    int i;
+    char *str = (char*)malloc((int)n*sizeof(char));
+    checkMalloc(str);
 
 
-
-int main()
-{
-    char choice;
+    char instruction;
     printf("Please enter a choice: ");
-    scanf(" %c", &choice);
-    if(choice =='a')
-    {
-        FILE *f;
-        f=fopen("ExampleFile.txt","r");
-        if(f==NULL)
-        {
-            printf("Error in opening the file.\n");
-            exit(0);
+    scanf("%c", &instruction);
+    fflush(stdin); //flushing out the intruction character - to be able to use getline on stdin
+    if(instruction=='a'){
+        fptr = fopen("ExampleFile.txt", "r");
+        if(fptr==NULL){
+            printf("fopen failled bruh\n");
+            exit(-1);
         }
-        int *arr=(int *)malloc(sizeof(int));
-        int i=0;
-        int size=1;
-        while(!feof(f))
-        {
-            fscanf(f,"%d",arr+i);
-            i++;
-            if(i==size)
-            {
-                arr=realloc(arr,4*(2*size));
-                size=2*size;
-            }
-        }
-        i--;
-        printf("%d\n",i);
-        func1(arr,i);
-        func2(arr,i);
+        getline(&str, &n, fptr);
     }
-    else if(choice=='b')
-    {
-        int *arr=(int *)malloc(sizeof(int));
-        int i=0;
-        int size=1;
+    else if(instruction=='b'){
         printf("Please input an integer array with space-separator and press Enter when done: ");
-        while(1)
-        {
-            scanf("%d",&arr[i]);
-            i++;
-            if(i==size)
-            {
-                arr=realloc(arr,4*(2*size));
-                size=2*size;
-            }
-            char y;
-            scanf("%c",&y);
-            if(y=='\n')
-            {
-                break;
-            }
+        getline(&str, &n, stdin);
+    }
+    n = strlen(str);
+    N = 1;
+    for(i=0; i<n; i++){
+        if(str[i]==' '){
+            N++;
         }
-        printf("The array size is %d\n",i);
-        func1(arr,i);
-        func2(arr,i);
     }
-    else
-    {
-        printf("Wrong input\n");
+    printf("The array size is %d\n", N);
+    arr = (int *)malloc(N*sizeof(int));
+    checkMalloc(arr);
+    int x=0, temp;
+    //please make sure arr[0] = 0.
+    for(i=0; i<N; i++){
+        arr[i] = atoi(str+i+x);
+        temp = arr[i];
+        if(arr[i]==0){
+            x++;
+            continue;
+        }
+        while(temp){
+            x++;
+            temp/=10;
+        }        
     }
+
+    CIarr = (int *)malloc(N*sizeof(int));
+    BItree = (int *)malloc(N*sizeof(int));
+    checkMalloc(CIarr);
+    checkMalloc(BItree);
+    
+    function_1();
+
+    printf("By function_1:\n");
+    start = clock();
+    for(i=1; i<N; i++){
+        CIarr[i]+=5;
+    }
+    //O(N) query
+    //expected 10^9 operations in 1 second.
+    end = clock();
+    tym = (double)(end - start)/CLOCKS_PER_SEC;
+    printf("The time taken for query_1 by function_1 is %f seconds.\n", tym);
+    printf("The incremented value of the first index element is %d\n", CIarr[1]);    
+
+    start = clock();
+    int sum = CIarr[N-6];
+    //O(1) query. Takes no time.
+    end = clock();
+    tym = (double)(end - start)/CLOCKS_PER_SEC;
+    printf("The time taken for query_2 by function_1 is %f seconds\n", tym);
+    printf("The sum of first n-5 elements is %d\n", sum);
+
+    arr[1]+=5;
+    function_2();
+    
+    printf("By function_2:\n");
+    start = clock();
+    i = 1;
+    while(i<N){
+        BItree[i] += 5;
+        i += i&-i;
+    }
+    //O(logn) function. 0 time even for N=10^9
+    end = clock();
+    tym = ((double)(end - start))/CLOCKS_PER_SEC;
+    printf("The time taken for query_1 by function_2 is %f seconds.\n", tym);
+    printf("The incremented value of the first index element is %d\n", BItree[1]);    
+
+    start = clock();
+    sum = 0;
+    i = N-6;
+    while(i){
+        sum += BItree[i];
+        i -= i&-i;
+    }
+    //O(logn) function. 0 time even for N=10^9
+    end = clock();
+    tym = (double)(end - start)/CLOCKS_PER_SEC;
+    printf("The time taken for query_2 by function_2 is %f seconds\n", tym);
+    printf("The sum of first n-5 elements is %d\n", sum);
+    
     return 0;
 }
+
