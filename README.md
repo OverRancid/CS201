@@ -55,7 +55,7 @@ original decimal value.
 1111 1111 1111 1111 1111 1111 1111 1001 -7
 ```
 
-# Week 2:
+# Week 2
 
 ### Task:
 Write a C-program which does the following based on the user choice of **a** or **b**:
