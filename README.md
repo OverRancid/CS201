@@ -1,4 +1,5 @@
 # CS201 - Data Structure 🐲
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Week 1
 ### Task 1:
@@ -91,3 +92,55 @@ You need to define two functions func1 and func2 defined as follows:
 
 In the main function you should call these functions as follows: First scan the input file and store values in N, K, Arr, Arr1. Then start a timer, call func1, stop the timer. Then print the returned value of func1 and the time taken by the function. Again, reset the timer to 0, call func2, stop the timer. Then print the returned value of func2 and the time taken
 by the function.
+
+# Week 6
+
+### Task:
+_This is an interactive task._
+The problem is to implement B-trees in C. Your B-tree program should support the following operations:
+
+- B-TREE-CREATE
+- B-TREE-SPLIT-CHILD
+- B-TREE-INSERT
+- B-TREE-INSERT-NONFULL
+- B-TREE-DELETE
+- B-TREE-SEARCH
+- B-TREE-MIN
+- B-TREE-INORDER-TRAVERSE
+
+# Week 8
+
+### Task:
+_This is an interactive task._
+The problem is to implement Hash-Table where collisions are resolved via chaining with doubly linked lists in C.
+The first line of input is an integer $m$, which provides the hashing function to be used as : $h(k) = k\mod m$.
+The remaining program should support the following operations:
+- Insert
+- Delete
+- Search
+- Display
+
+# Week 9
+
+### Task:
+For this assignment you need to implement randomized-quick sort and insertion sort from the numbers in a file.
+Input: a .txt file with 10000 integers (32 bit)
+Output: output_randomqs.txt and output_insersions.txt files with 10000 integers from input file in sorted order, and 2 integers in stdout - number of comparisions taken by randomized-quick sort and insertion sort respectively. 
+
+# Week 11
+
+## Task:
+Implement DFS in C. If the graph is undirected return if the graph is bipartite (show a colouring if it is) or not.
+
+Input:
+- line 1: int $V$ - number of vertices in graph
+- line 2: char $c$ - 'U' if graph is undirected, 'D' if graph is directed.
+- next $E$ lines: int, int $(u, v)$ - representing an edge between vetrices u and v (from u to v in directed graph).
+- line 4: char 'Q' - to indicate last edge has been added.
+
+Output:
+- first $V$ lines: adjecency list for each vertex.
+- next $V$ lines: result of DFS on graph - with discovery and finish time for each vertex.
+- next $E$ lines: classification of each edge as 'tree', 'forward', 'back' or 'cross' edge.
+- last line: Bipartiteness of graph (along with a colouring if it is bipartite).
+
